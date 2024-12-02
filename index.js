@@ -21,69 +21,67 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+  // try {
+  //   // Connect the client to the server	(optional starting in v4.7)
+  //   await client.connect();
 
-    // user apis
-    const usersCollection = client.db("usersDB").collection("users");
+  // user apis
+  const usersCollection = client.db("usersDB").collection("users");
 
-    app.get("/users", async (req, res) => {
-      const cursor = usersCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
+  app.get("/users", async (req, res) => {
+    const cursor = usersCollection.find();
+    const result = await cursor.toArray();
+    res.send(result);
+  });
 
-    app.get("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await usersCollection.findOne(query);
-      res.send(result);
-    });
+  app.get("/users/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await usersCollection.findOne(query);
+    res.send(result);
+  });
 
-    app.post("/users", async (req, res) => {
-      const newUser = req.body;
+  app.post("/users", async (req, res) => {
+    const newUser = req.body;
 
-      const result = await usersCollection.insertOne(newUser);
-      res.send(result);
-    });
+    const result = await usersCollection.insertOne(newUser);
+    res.send(result);
+  });
 
-    app.put("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const updatedUser = req.body;
-      console.log(updatedUser);
+  app.put("/users/:id", async (req, res) => {
+    const id = req.params.id;
+    const updatedUser = req.body;
+    console.log(updatedUser);
 
-      const filter = { _id: new ObjectId(id) };
-      const options = { upsert: true };
+    const filter = { _id: new ObjectId(id) };
+    const options = { upsert: true };
 
-      const user = {
-        $set: {
-          name: updatedUser.name,
-          email: updatedUser.email,
-          job: updatedUser.job,
-        },
-      };
+    const user = {
+      $set: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        job: updatedUser.job,
+      },
+    };
 
-      const result = await usersCollection.updateOne(filter, user, options);
-      res.send(result);
-    });
+    const result = await usersCollection.updateOne(filter, user, options);
+    res.send(result);
+  });
 
-    app.delete("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await usersCollection.deleteOne(query);
-      res.send(result);
-    });
+  app.delete("/users/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await usersCollection.deleteOne(query);
+    res.send(result);
+  });
 
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
-  }
+  // Send a ping to confirm a successful connection
+  await client.db("admin").command({ ping: 1 });
+  console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  // } finally {
+  //   // Ensures that the client will close when you finish/error
+  //   // await client.close();
+  // }
 }
 run().catch(console.dir);
 
