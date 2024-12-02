@@ -51,7 +51,7 @@ async function run() {
   app.put("/users/:id", async (req, res) => {
     const id = req.params.id;
     const updatedUser = req.body;
-    console.log(updatedUser);
+    // console.log(updatedUser);
 
     const filter = { _id: new ObjectId(id) };
     const options = { upsert: true };
@@ -65,6 +65,21 @@ async function run() {
     };
 
     const result = await usersCollection.updateOne(filter, user, options);
+    res.send(result);
+  });
+
+  app.patch("/users/:id", async (req, res) => {
+    const id = req.params.id;
+    const updateStatus = req.body;
+
+    const query = { _id: new ObjectId(id) };
+    const update = {
+      $set: {
+        isPaid: updateStatus.isPaid,
+      },
+    };
+
+    const result = await usersCollection.updateOne(query, update);
     res.send(result);
   });
 
